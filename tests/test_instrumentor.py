@@ -10,6 +10,8 @@ from stackops_tracing.instrumentor import (
     instrument_redis,
     instrument_rabbitmq,
     instrument_kafka,
+    instrument_asyncpg,
+    instrument_sqlalchemy,
 )
 from opentelemetry import propagate
 from opentelemetry.context import Token
@@ -62,7 +64,9 @@ class TestInstrumentor(unittest.TestCase):
             "opentelemetry.instrumentation.redis": None,
             "opentelemetry.instrumentation.pika": None,
             "opentelemetry.instrumentation.aio_pika": None,
-            "opentelemetry.instrumentation.kafka": None
+            "opentelemetry.instrumentation.kafka": None,
+            "opentelemetry.instrumentation.asyncpg": None,
+            "opentelemetry.instrumentation.sqlalchemy": None,
         }):
             res_fastapi = instrument_fastapi(None)
             self.assertFalse(res_fastapi)
@@ -88,6 +92,16 @@ class TestInstrumentor(unittest.TestCase):
             self.assertFalse(res_kafka)
             mock_logger.warning.assert_called_once()
 
+            mock_logger.reset_mock()
+            res_asyncpg = instrument_asyncpg()
+            self.assertFalse(res_asyncpg)
+            mock_logger.warning.assert_called_once()
+
+            mock_logger.reset_mock()
+            res_sqlalchemy = instrument_sqlalchemy()
+            self.assertFalse(res_sqlalchemy)
+            mock_logger.warning.assert_called_once()
+
     @patch("opentelemetry.instrumentation.kafka.KafkaInstrumentor")
     def test_instrument_kafka_success(self, mock_kafka_instrumentor_class):
         mock_instance = MagicMock()
@@ -96,4 +110,24 @@ class TestInstrumentor(unittest.TestCase):
         result = instrument_kafka()
         self.assertTrue(result)
         mock_instance.instrument.assert_called_once()
+
+    def test_instrument_asyncpg_success(self):
+        mock_instrumentor = MagicMock()
+        mock_module = MagicMock()
+        mock_module.AsyncPGInstrumentor = MagicMock(return_value=mock_instrumentor)
+        
+        with patch.dict("sys.modules", {"opentelemetry.instrumentation.asyncpg": mock_module}):
+            result = instrument_asyncpg()
+            self.assertTrue(result)
+            mock_instrumentor.instrument.assert_called_once()
+
+    def test_instrument_sqlalchemy_success(self):
+        mock_instrumentor = MagicMock()
+        mock_module = MagicMock()
+        mock_module.SQLAlchemyInstrumentor = MagicMock(return_value=mock_instrumentor)
+        
+        with patch.dict("sys.modules", {"opentelemetry.instrumentation.sqlalchemy": mock_module}):
+            result = instrument_sqlalchemy()
+            self.assertTrue(result)
+            mock_instrumentor.instrument.assert_called_once()
 

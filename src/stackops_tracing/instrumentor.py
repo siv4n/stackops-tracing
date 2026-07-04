@@ -135,11 +135,43 @@ def instrument_kafka() -> bool:
         return False
 
 
+def instrument_asyncpg() -> bool:
+    """Instruments asyncpg client library."""
+    try:
+        from opentelemetry.instrumentation.asyncpg import AsyncPGInstrumentor
+        AsyncPGInstrumentor().instrument()
+        logger.info("AsyncPG auto-instrumentation successful.")
+        return True
+    except ImportError as e:
+        logger.warning("AsyncPGInstrumentor is not installed or available: %s", e)
+        return False
+    except Exception as e:
+        logger.error("Failed to instrument AsyncPG: %s", e)
+        return False
+
+
+def instrument_sqlalchemy() -> bool:
+    """Instruments sqlalchemy library."""
+    try:
+        from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
+        SQLAlchemyInstrumentor().instrument()
+        logger.info("SQLAlchemy auto-instrumentation successful.")
+        return True
+    except ImportError as e:
+        logger.warning("SQLAlchemyInstrumentor is not installed or available: %s", e)
+        return False
+    except Exception as e:
+        logger.error("Failed to instrument SQLAlchemy: %s", e)
+        return False
+
+
 def instrument_all(fastapi_app: Optional["FastAPI"] = None) -> None:
     """Instruments all supported libraries."""
     instrument_pymongo()
     instrument_redis()
     instrument_rabbitmq()
     instrument_kafka()
+    instrument_asyncpg()
+    instrument_sqlalchemy()
     if fastapi_app is not None:
         instrument_fastapi(fastapi_app)

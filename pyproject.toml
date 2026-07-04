@@ -15,21 +15,50 @@ dependencies = [
     "opentelemetry-exporter-otlp-proto-common == 1.42.1",
     "opentelemetry-exporter-otlp-proto-http == 1.42.1",
     "opentelemetry-instrumentation == 0.63b1",
-    "opentelemetry-instrumentation-asgi == 0.63b1",
-    "opentelemetry-instrumentation-redis == 0.63b1",
     "opentelemetry-semantic-conventions == 0.63b1",
-    "opentelemetry-instrumentation-fastapi == 0.63b1",
-    "opentelemetry-instrumentation-pymongo == 0.63b1",
-    "opentelemetry-instrumentation-pika == 0.63b1",
-    "opentelemetry-instrumentation-aio-pika == 0.63b1",
-    "opentelemetry-instrumentation-kafka-python == 0.63b1",
-    "kafka-python",
-    "aio-pika",
-    "aiormq",
-    "pika",
 ]
 
 [project.optional-dependencies]
+redis = [
+    "opentelemetry-instrumentation-redis == 0.63b1",
+]
+mongo = [
+    "opentelemetry-instrumentation-pymongo == 0.63b1",
+]
+kafka = [
+    "opentelemetry-instrumentation-kafka-python == 0.63b1",
+    "kafka-python",
+]
+rabbit = [
+    "opentelemetry-instrumentation-pika == 0.63b1",
+    "opentelemetry-instrumentation-aio-pika == 0.63b1",
+    "pika",
+    "aio-pika",
+    "aiormq",
+]
+fastapi = [
+    "opentelemetry-instrumentation-fastapi == 0.63b1",
+    "opentelemetry-instrumentation-asgi == 0.63b1",
+]
+postgres = [
+    "opentelemetry-instrumentation-asyncpg == 0.63b1",
+    "opentelemetry-instrumentation-sqlalchemy == 0.63b1",
+]
+all = [
+    "opentelemetry-instrumentation-redis == 0.63b1",
+    "opentelemetry-instrumentation-pymongo == 0.63b1",
+    "opentelemetry-instrumentation-kafka-python == 0.63b1",
+    "kafka-python",
+    "opentelemetry-instrumentation-pika == 0.63b1",
+    "opentelemetry-instrumentation-aio-pika == 0.63b1",
+    "pika",
+    "aio-pika",
+    "aiormq",
+    "opentelemetry-instrumentation-fastapi == 0.63b1",
+    "opentelemetry-instrumentation-asgi == 0.63b1",
+    "opentelemetry-instrumentation-asyncpg == 0.63b1",
+    "opentelemetry-instrumentation-sqlalchemy == 0.63b1",
+]
 dev = [
     "pytest",
     "pytest-asyncio",

@@ -88,3 +88,14 @@ class TestConfig(unittest.TestCase):
         configurator_debug = TracingConfigurator(service_name="test-debug", debug=True)
         self.assertEqual(config_logger.level, logging.DEBUG)
 
+    def test_resource_attributes(self):
+        configurator = TracingConfigurator(
+            service_name="my-service",
+            service_namespace="my-namespace",
+            service_origin="my-origin",
+        )
+        self.assertEqual(configurator.resource.attributes["service.name"], "my-service")
+        self.assertEqual(configurator.resource.attributes["service.namespace"], "my-namespace")
+        self.assertEqual(configurator.resource.attributes["service.origin"], "my-origin")
+        self.assertEqual(configurator.resource.attributes["project.origin"], "my-origin")
+

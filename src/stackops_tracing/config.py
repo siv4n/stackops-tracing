@@ -53,10 +53,14 @@ class TracingConfigurator:
         otlp_endpoint: str = "http://localhost:4318",
         custom_resource_attrs: Optional[Dict[str, str]] = None,
         debug: bool = False,
+        service_namespace: Optional[str] = None,
+        service_origin: Optional[str] = None,
     ) -> None:
         self.service_name = service_name
         self.otlp_endpoint = otlp_endpoint
         self.debug = debug
+        self.service_namespace = service_namespace
+        self.service_origin = service_origin
 
         if self.debug:
             logger.setLevel(logging.DEBUG)
@@ -66,6 +70,13 @@ class TracingConfigurator:
         resource_attributes = {
             "service.name": self.service_name,
         }
+
+        if self.service_namespace:
+            resource_attributes["service.namespace"] = self.service_namespace
+
+        if self.service_origin:
+            resource_attributes["service.origin"] = self.service_origin
+            resource_attributes["project.origin"] = self.service_origin
 
         if custom_resource_attrs:
             resource_attributes.update(custom_resource_attrs)
